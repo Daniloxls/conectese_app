@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
   },
-  userName: {
+  username: {
     fontFamily: FONT.regular,
     fontSize: SIZES.large,
     color: COLORS.secondary,

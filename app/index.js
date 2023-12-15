@@ -7,23 +7,51 @@ import {Nearbyjobs, Popularjobs, ScreenHeaderBtn, Welcome} from "../components";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import InputField from '../components/common/field/InputField';
+import axios from 'axios';
+
 
 const Login = () => {
     const router = useRouter();
-    const [userName, setUserName] = useState("")
+    const [username, setUserName] = useState("")
     const [password, setPassword] = useState(""); // State for password
-    const handleLogin = () => {
-        // You can access userName and password here and perform any necessary actions
-        console.log("Username:", userName);
-        console.log("Password:", password);
-        // Add your login logic here
-        router.push('/home/');
-      };
+    const handleLogin = async () => {
+      try {
+        const response = await axios.post(
+          'http://192.168.0.7:8080/api/auth/signin/professional',
+          {
+            username: username,
+            password: password,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json', // Ensure the content type is set to JSON
+            },
+          }
+        );
+    
+        if (response.status === 200) {
+          // Successful login
+          const responseData = response.data;
+          console.log(responseData); // Log the success message
+          router.push('/home');
+          // You can also store the token in a secure way if needed
+          const token = responseData.token;
+          // Do something with the token, like storing it in localStorage or a secure cookie
+        } else {
+          // Invalid credentials or other error
+          console.log(response.data.message); // Log the error message
+        }
+      } catch (error) {
+        console.error('Error:', error.response.data.message);
+      }
+    };
     return(
-        <SafeAreaView style={{ flex:1, backgroundColor: COLORS.lightWhite , justifyContent: 'center'}}>
+        <SafeAreaView style={{ flex:1, backgroundColor: COLORS.darkBlue , justifyContent: 'center'}}>
             
             <Stack.Screen 
-                options={{headerStyle:{backgroundColor:COLORS.lightWhite},
+                options={{
+                headerShown: true,
+                headerStyle:{backgroundColor:COLORS.darkBlue},
                 headerShadowVisible: false,
                 headerTitle: ""
              }}
@@ -31,7 +59,7 @@ const Login = () => {
             <View style={{paddingHorizontal:25}}>
                 <View showVerticalScrollIndicator={false}>
                 <Image 
-                    source={require('../assets/logo_blue.png')}
+                    source={require('../assets/footerLogo.png')}
                     style={ {width: "auto",
                     height: "45%"}}
                     resizeMode='contain'/>
@@ -39,7 +67,7 @@ const Login = () => {
                 
                     <Text style={{fontFamily: FONT.bold,
                                 fontSize: SIZES.large,
-                                color: COLORS.primary,
+                                color: COLORS.white,
                                 marginBottom: 30}}>
                         Login
                     </Text>
@@ -49,7 +77,8 @@ const Login = () => {
                     color="#666"
                     style={{marginRight:5, marginTop:3}}/>
                     }
-                    value={userName} // Pass the userName state as value
+                    backgroundColor={COLORS.white}
+                    value={username} // Pass the username state as value
                     onChangeText={(text) => setUserName(text)}
                  />
                  <InputField label={'Senha'} icon={
@@ -66,16 +95,16 @@ const Login = () => {
 
                  />
                 <TouchableOpacity onPress={handleLogin} 
-                                        style={{backgroundColor:'#0572a7ff',
+                                        style={{backgroundColor:COLORS.white,
                                                 padding:20,
                                                 borderRadius:10,
                                                 marginBottom:30}}>
-                    <Text style={{textAlign:'center', fontWeight:'700', fontSize:16, color:'#fff'}}> Entrar</Text>
+                    <Text style={{textAlign:'center', fontWeight:'700', fontSize:16, color:COLORS.darkBlue}}> Entrar</Text>
                 </TouchableOpacity>
                 <View style={{flexDirection:'row', justifyContent:'center', marginBottom:30}}>
-                    <Text>Novo aqui ?</Text>
+                    <Text style={{color:COLORS.white}}>Novo aqui ?</Text>
                     <TouchableOpacity onPress={() => { router.push('/register')}}>
-                        <Text style={{color:'#0572a7ff' , fontWeight:700}}> Cadastre-se</Text>
+                        <Text style={{color:COLORS.lightWhite , fontWeight:700}}> Cadastre-se</Text>
                     </TouchableOpacity>
                 </View>
             </View>
